@@ -1,0 +1,30 @@
+name: Mirror Repository
+
+on:
+  schedule:
+    - cron: '*/2 * * * *'  # Run every 1 minute
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config user.name "Naveenmorty"
+          git config user.email "naveenkumar1297g@gmail.com"
+
+      - name: Fetch changes
+        run: |
+          git fetch --prune --tags
+          git pull origin main  # Change 'main' to your branch name
+
+      - name: Push to mirror repository
+        run: |
+          git remote add mirror https://github.com/Naveenmorty/githubaction.git
+          git push mirror main  # Change 'main' to your branch name
+        env:
+          GH_TOKEN: ${{ secrets.REPO_NAME }}
